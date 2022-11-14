@@ -219,6 +219,27 @@ df2_pca.plot(
         x='PCA2',y='PCA3',
         figsize=(16,8))
 
+df2_pca2 = df2_pca.drop(['PCA1','PCA4','PCA5','PCA6','PCA7'], axis=1)
+df2_pca2.head()
+
+scaler = StandardScaler()
+scaled_features2 = scaler.fit_transform(df2_pca2)
+
+kmeans = KMeans(n_clusters=3)
+clusters = kmeans.fit(df2_pca2)
+df['cluster'] = pd.Series(clusters.labels_, index=df.index)
+
+kmeans = KMeans(
+    n_clusters = 3,
+    init="k-means++",
+    n_init=20,
+    max_iter=500,
+    random_state=42 )
+
+kmeans.fit(df2_pca2)
+df_t2 = scaled_features2.T
+plt.scatter(df_t2[0], df_t2[1], c=kmeans.labels_)
+
 kmeans = KMeans(n_clusters=7)
 clusters = kmeans.fit(df2_pca)
 df['cluster'] = pd.Series(clusters.labels_, index=df.index)
